@@ -55,19 +55,7 @@ def extract_answers_sequence(file_path: str) -> list[int]:
 
 
 def write_answers_sequence(answers: list[int], n: int) -> None:
-    """
-    Saves the extracted sequence for respondent n to a text file in the 'output' folder.
-
-    Parameters:
-        answers (list[int]): A list of exactly 100 integers representing the answers.
-        n (int): The positive integer identifier for the respondent.
-
-    Returns:
-        None
-
-    Raises:
-        ValueError: If 'answers' is not a list, contains invalid values, or if 'n' is not positive.
-    """
+   
     
     if not isinstance(answers, list):
         raise ValueError("answers must be provided as a list.")
