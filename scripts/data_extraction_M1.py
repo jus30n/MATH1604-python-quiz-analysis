@@ -2,22 +2,7 @@ import os
 import re
 
 def extract_answers_sequence(file_path: str) -> list[int]:
-    """
-    Parses a respondent's answer file and extracts their answers into a structured sequence.
-
-    Parameters:
-        file_path (str): The path to the quiz answers text file.
-
-    Returns:
-        list[int]: A list of 100 integers representing the respondent's answers. 
-                   Each integer is 1, 2, 3, or 4 corresponding to the selected option, 
-                   or 0 if the question was not answered.
-
-    Raises:
-        FileNotFoundError: If the provided file_path does not exist.
-        ValueError: If an incomplete question block is found, multiple answers are selected 
-                    for a single question, or if the file does not contain exactly 100 answers.
-    """
+   
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
