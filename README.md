@@ -54,24 +54,26 @@ If you are unsure about anything:
 ## Setup Guide (VS Code + Git + Github Workflow)
 
 ### 1. Install Required Software
-[Download VS Code](https://code.visualstudio.com/)
-[Download Git](https://git-scm.com/downloads)
+- [Download VS Code](https://code.visualstudio.com/)
+- [Download Git](https://git-scm.com/downloads)
 
 
 ### 2. First-time Git Setup
 Open terminal in VS Code and run:
 
 git config --global user.name "Your Name"
+
+
 git config --global user.email "yourgithubemail@example.com"
-V
+
 
 ### 3. Clone the Repository 
 1. Go to GitHub Repository
 2. Click Code -> HTTPS -> Copy link
 3. In VS Code:
-Press Ctrl + Shift + P
-Type: Git: Clone
-Paste the link -> select folder -> open project
+- Press Ctrl + Shift + P
+- Type: Git: Clone
+- Paste the link -> select folder -> open project
 
 
 ### 4. Daily Workflow (IMPORTANT)
@@ -100,8 +102,8 @@ Press: Ctrl + S
 ### Step 5 - Commit changes
 Go to Source Control (left panel):
 1. Click + (stage changes)
-2. Write commit message (example): 
-    M1: Implement extraction logic
+2. Write commit message (example):
+- M1: Implement extraction logic
 3. Click Commit
 
 
@@ -117,8 +119,9 @@ Click: Publish Branch or Sync Changes
 
 
 ### Step 8 - Merge pull request
-Before merging, double confirm the changes with another group member. Then click:
-Merge pull request -> Confirm merge
+Before merging, double confirm the changes with another group member.
+
+Then click: Merge pull request -> Confirm merge
 
 
 ### Step 9 - Update local code
@@ -133,10 +136,10 @@ Back in VS Code: Git pull
 
 
 ### Key concepts
-Push = upload your code to Github
-Pull = download latest code from Github
-Branch = your personal working version
-Pull request (PR) = request to merge your work into main
+- Push = upload your code to Github
+- Pull = download latest code from Github
+- Branch = your personal working version
+- Pull request (PR) = request to merge your work into main
 
 
 ### Workflow Summary
