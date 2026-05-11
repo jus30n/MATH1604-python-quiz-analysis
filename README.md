@@ -20,7 +20,7 @@ This is important so that M4 (full pipeline) can integrate everything smoothly.
 
 ### Module Responsibilities
 - M1: Extract answer sequences (by Aziz)
-- M2: Download and collate answer files (by Yu Xuan)
+- M2: Download and collate answer files (by Yuxuan)
 - M3: Generate statistics and visualisations (by Sarah)
 - M4: Full pipeline integration (by Justin)
 
