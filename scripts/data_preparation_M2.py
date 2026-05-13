@@ -4,9 +4,12 @@ M2 Data Preparation Module
 This module is to download the raw respondent answer files from the cloud and save them to
 the data folder using consistent naming conventions. 
 
-These downloaded files are still raw text files contatining the full question blocks and
-[x] answer selections. M1 will later parse each respondent file into a cleaned sequence
-of integers.
+It also collates the downloaded raw respondent files into one combined file called
+collated_answers.txt in the output/ folder.
+
+These downloaded and collated files are still raw text files contatining the full question 
+blocks and [x] answer selections. M3 will later use M1's extraction function to parse the
+answer selections into integer sequences for analysis.
 """
 
 import os
@@ -76,6 +79,88 @@ def download_answer_files(cloud_url: str, path_to_data_folder: str, total_respon
         except urllib.error.URLError as error:
             print(f"Warning: Could not connect to download a{n}.txt. Reason: {error.reason}")
 
+
+def collate_answer_files(data_folder_path: str) -> None:
+    """
+    Collate all respondent answer files into one combined output file.
+    
+    This function reads respondent files from the data folder using the naming format
+    answers_respondent_1.txt, answers_respondent_2.txt, etc. It combines them into one file
+    named collated_answers.txt inside the output/ folder.
+    
+    Each respondent section is separated by a line containing one asterisk (*).
+    
+    Parameters
+    ----------
+    data_folder_path : str
+        Path to the folder containing the raw respondent answer files.
+        
+    Returns
+    -------
+    None
+        This function does not return a value. It saves the collated file into the 
+        output folder.
+        
+    Raises
+    ------
+    FileNotFoundError
+        If the provided data folder does not exist.
+        
+    ValueError
+        If no respondent answer files are found in the data folder."""
+
+    if not os.path.exists(data_folder_path):
+        raise FileNotFoundError(f"Data folder not found: {data_folder_path}")
+    
+    # Find files that match the expected respondent filename format
+    respondent_files = []
+
+    for filename in os.listdir(data_folder_path):
+        if (
+            filename.startswith("answers_respondent_") 
+            and filename.endswith(".txt")
+        ):
+            respondent_files.append(filename)
+
+    if len(respondent_files) == 0:
+        raise ValueError(f"No respondent answer files found in the data folder.")
+    
+    # Sort files by respondent number, not alphabetically
+    # This ensures respondent_2 comes before respondent_10, etc.
+    respondent_files.sort(
+        key=lambda filename: int(
+            filename.replace("answers_respondent_", "").replace(".txt", "")
+        )
+    )
+
+    # Create output folder if it does not already exist
+    output_folder = "output"
+    os.makedirs(output_folder, exist_ok=True)
+
+    collated_path = os.path.join(output_folder, "collated_answers.txt")
+
+    with open(collated_path, "w", encoding="utf-8") as output_file:
+
+        for filename in respondent_files:
+            file_path = os.path.join(data_folder_path, filename)
+
+            with open(file_path, "r", encoding="utf-8") as respondent_file:
+                content = respondent_file.read().strip()
+
+            # Write the respondent's raw answer file content
+            output_file.write(content)
+            output_file.write("\n")
+
+            # Separate respondent sections with one asterisk
+            output_file.write("*\n") 
+            
+    print(f"Collated {len(respondent_files)} respondent files into {collated_path}")
+
 if __name__ == "__main__":
     cloud_url = "https://raw.githubusercontent.com/fc-leeds/MATH1604_2025_2026_data/main"
-    download_answer_files(cloud_url, "data", 64)
+
+    data_folder = "data"
+
+    download_answer_files(cloud_url, data_folder, 64)
+
+    collate_answer_files(data_folder)
