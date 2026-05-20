@@ -2,23 +2,38 @@ import os
 import re
 
 def extract_answers_sequence(file_path: str) -> list[int]:
-   
+    """
+    Parses a respondent's answer file and extracts their answers into a structured sequence.
+
+    Parameters:
+        file_path (str): The path to the quiz answers text file.
+
+    Returns:
+        list[int]: A list of 100 integers representing the respondent's answers. 
+                   Each integer is 1, 2, 3, or 4 corresponding to the selected option, 
+                   or 0 if the question was not answered.
+
+    Raises:
+        FileNotFoundError: If the provided file_path does not exist.
+        ValueError: If an incomplete question block is found, multiple answers are selected 
+                    for a single question, or if the file does not contain exactly 100 answers.
+    """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
-  
+   
     with open(file_path, 'r', encoding='utf-8') as file:
         lines = [line.rstrip('\n') for line in file]
 
     answers = []
-    
+   
     question_pattern = re.compile(r"^\s*Question\s+\d+\.")
     i = 0
 
     while i < len(lines):
         line = lines[i]
         
-       
+      
         if question_pattern.match(line):
             if i + 4 >= len(lines):
                 raise ValueError("Incomplete question block detected: each question must be followed by four answer lines.")
@@ -26,28 +41,28 @@ def extract_answers_sequence(file_path: str) -> list[int]:
             option_lines = lines[i+1 : i+5]
             selected_options = []
 
-           
+            
             for option_number, option_line in enumerate(option_lines, start=1):
                 stripped = option_line.strip()
                 if stripped.startswith("[x]") or stripped.startswith("[X]"):
                     selected_options.append(option_number)
 
-           
+            
             if len(selected_options) > 1:
                 raise ValueError(f"More than one selected answer found for question {len(answers) + 1}.")
 
-           
+          
             if len(selected_options) == 1:
                 answers.append(selected_options[0])
             else:
                 answers.append(0)
 
-           
+            
             i += 5
         else:
             i += 1
 
-   
+    
     if len(answers) != 100:
         raise ValueError(f"Expected 100 answers, but extracted {len(answers)}")
 
@@ -55,8 +70,20 @@ def extract_answers_sequence(file_path: str) -> list[int]:
 
 
 def write_answers_sequence(answers: list[int], n: int) -> None:
+    """
+    Saves the extracted sequence for respondent n to a text file in the 'output' folder.
+
+    Parameters:
+        answers (list[int]): A list of exactly 100 integers representing the answers.
+        n (int): The positive integer identifier for the respondent.
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If 'answers' is not a list, contains invalid values, or if 'n' is not positive.
+    """
    
-    
     if not isinstance(answers, list):
         raise ValueError("answers must be provided as a list.")
 
@@ -69,18 +96,17 @@ def write_answers_sequence(answers: list[int], n: int) -> None:
     
     output_dir = "output"
     
-   
+    
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-   
+
     output_filename = f"answers_list_respondent_{n}.txt"
     output_path = os.path.join(output_dir, output_filename)
 
     
     with open(output_path, 'w', encoding='utf-8') as file:
         file.write(" ".join(str(val) for val in answers) + "\n")
-
 
 
 
