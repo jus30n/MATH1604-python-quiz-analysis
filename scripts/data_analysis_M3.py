@@ -1,6 +1,7 @@
 import os
 import tempfile
 import matplotlib.pyplot as plt
+import re
 from data_extraction_M1 import extract_answers_sequence
 
 def _get_all_sequences(collated_answers_path: str) -> list[list[int]]:
@@ -16,7 +17,11 @@ def _get_all_sequences(collated_answers_path: str) -> list[list[int]]:
         content = f.read()
     
     
-    blocks = [block.strip() for block in content.split('*') if block.strip()]
+    blocks = [
+        block.strip() 
+        for block in re.split(r"(?m)^\s*\*\s*$", content)
+        if  block.strip()
+    ]
     
     all_answers = []
     
@@ -114,4 +119,16 @@ def visualize_data(collated_answers_path: str, n: int) -> None:
         
     else:
        
-        print("Error: Parameter 'n' must be either 1 or 2.")
+        raise ValueError("Parameter 'n' must be either 1 or 2.")
+    
+
+if __name__ == "__main__":
+    test_file = "output/collated_answers.txt"
+
+    means = generate_means_sequence(test_file)
+
+    print("Number of means:", len(means))
+    print("First 10 means:", means[:10])
+
+    visualize_data(test_file, 1)
+    visualize_data(test_file, 2)
