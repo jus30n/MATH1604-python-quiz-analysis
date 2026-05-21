@@ -33,7 +33,7 @@ def extract_answers_sequence(file_path: str) -> list[int]:
 
       # Read the file and strip newline characters from the right
     with open(file_path, 'r', encoding='utf-8') as file:
-        lines = [line.rstrip('\n') for line in file]
+        lines = [line.strip() for line in file if line.strip()]
 
     answers = []
     
@@ -46,18 +46,27 @@ def extract_answers_sequence(file_path: str) -> list[int]:
         
         # When a question header is found, check the next 4 lines for options
         if question_pattern.match(line):
-            if i + 4 >= len(lines):
-                raise ValueError(
-                    "Incomplete question block detected: each question must be followed by four answer lines."
-                )
-
             option_lines = lines[i+1 : i+5]
             selected_options = []
 
-            # Check each of the 4 lines for an [x] or [X] indicating a selected answer
+            j = i + 1
+
+            # Search forward until we find the next 4 answer option lines
+            while j < len(lines) and len(option_lines) < 4:
+                current = lines[j].strip()
+
+                if current.startswith("["):
+                    option_lines.append(current)
+
+                j += 1
+
+            if len(option_lines) != 4:
+                raise ValueError(
+                    f"Question {len(answers)+1}: expected 4 answer options, found {len(option_lines)}"
+                )
+            
             for option_number, option_line in enumerate(option_lines, start=1):
-                stripped = option_line.strip()
-                if stripped.startswith("[x]") or stripped.startswith("[X]"):
+                if option_line.startswith("[x]") or option_line.startswith("[X]"):
                     selected_options.append(option_number)
 
             # Ensure a respondent didn't select multiple answers for one question
@@ -70,8 +79,8 @@ def extract_answers_sequence(file_path: str) -> list[int]:
             else:
                 answers.append(0)
 
-           # Skip ahead past the current question and its 4 options
-            i += 5
+           #Continue scanning after the 4 answer options
+            i = j
         else:
             i += 1
 
